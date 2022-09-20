@@ -30,4 +30,8 @@ public interface TeacherService {
     List<Teacher> paginatedTeachers(Integer pageNo, Integer pageSize);
 
     List<Teacher> findAllAndSort(String dir);
+
+    Integer updateTeacherEmail(Integer teacherId, String email);
+
+    Integer deleteByFirstname(String email);
 }

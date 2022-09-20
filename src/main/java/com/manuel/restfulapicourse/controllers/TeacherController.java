@@ -8,6 +8,8 @@ import com.manuel.restfulapicourse.entity.Teacher;
 import com.manuel.restfulapicourse.services.impl.TeacherServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -68,7 +70,7 @@ public class TeacherController {
     }
 
     // querying with IN operator in JPA
-    @GetMapping("teachers/")
+    @GetMapping("teachers/{something}")
     public List<ResponseEntity> getAllMatchingNames(@RequestBody QueryName queryNames){
         return teacherService.findByFirstnameIn(queryNames);
     }
@@ -86,5 +88,19 @@ public class TeacherController {
         return teacherService.findAllAndSort(dir);
     }
 
+    // updating a particular teacher's record with a parameter from client
+    @PutMapping("teacher/{id}/{email}")
+    public String modifyRecord(@PathVariable("id") Integer teacherId,
+                                @PathVariable("email") String email){
+        Integer recordAffected = teacherService.updateTeacherEmail(teacherId, email);
+        String message = recordAffected +" "+ "Updated";
+        return message;
+    }
 
+    @Transactional
+    @Modifying
+    @DeleteMapping("teacher/{email}")
+    public String deleteRecord(@PathVariable String email){
+        return teacherService.deleteByFirstname(email) +" "+ "Recorded Deleted";
+    }
 }

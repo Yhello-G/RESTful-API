@@ -121,5 +121,16 @@ public class TeacherServiceImpl implements TeacherService {
        return teacherDAO.findAll(sort);
     }
 
+    @Override
+    public Integer updateTeacherEmail(Integer teacherId, String email) {
+        return teacherDAO.upadteRecordOf(teacherId, email);
+    }
+
+    @Override
+    public Integer deleteByFirstname(String email) {
+        return teacherDAO.deleteTeacher(email);
+
+    }
+
 
 }
