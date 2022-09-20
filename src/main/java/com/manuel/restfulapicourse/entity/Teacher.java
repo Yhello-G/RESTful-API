@@ -23,10 +23,13 @@ public class Teacher {
     @Column(name = "school_taught")
     private String school;
 
+    @OneToOne
+    @JoinColumn(name="teacher_address")
+    private Address address;
+
     public Teacher(TeacherDTO teacherDTO){
         this.firstname = teacherDTO.getFirstname();
         this.lastname = teacherDTO.getLastname();
         this.email = teacherDTO.getEmail();
-        this.school = teacherDTO.getSchool();
     }
 }

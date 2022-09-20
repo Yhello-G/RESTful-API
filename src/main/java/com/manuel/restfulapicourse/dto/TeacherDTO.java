@@ -13,6 +13,7 @@ public class TeacherDTO {
     private String firstname;
     private String lastname;
     private String email;
-    private String school;
+    private String street;
+    private String state;
 
 }

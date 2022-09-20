@@ -1,7 +1,7 @@
 package com.manuel.restfulapicourse.controllers;
 
 import com.manuel.restfulapicourse.dto.QueryName;
-import com.manuel.restfulapicourse.dto.ResponseEntity;
+import com.manuel.restfulapicourse.dto.TeacherEntityResponse;
 import com.manuel.restfulapicourse.dto.TeacherDTO;
 import com.manuel.restfulapicourse.dto.UpdateTeacherDTO;
 import com.manuel.restfulapicourse.entity.Teacher;
@@ -25,18 +25,19 @@ public class TeacherController {
     private String appName;
 
     @GetMapping("teachers")
-    public List<ResponseEntity> getStudent(){
+    public List<TeacherEntityResponse> getStudent(){
     return teacherService.getAllTeacher();
     }
 
     @PostMapping("/create")
-    public Teacher insertTeacher(@Valid @RequestBody TeacherDTO teacher){
+    public TeacherEntityResponse insertTeacher(@Valid @RequestBody TeacherDTO teacher){
+       Teacher savedTeacher = teacherService.insertTeacherToDb(teacher);
+       return new TeacherEntityResponse(savedTeacher);
 
-       return teacherService.insertTeacherToDb(teacher);
     }
 
     @PutMapping("/update")
-    public ResponseEntity updateTeacher(@Valid @RequestBody UpdateTeacherDTO teacherDTO){
+    public TeacherEntityResponse updateTeacher(@Valid @RequestBody UpdateTeacherDTO teacherDTO){
 
        return teacherService.updateTeacher(teacherDTO);
 
@@ -64,14 +65,14 @@ public class TeacherController {
 
     // querying with WHERE Clause with OR
     @GetMapping("teachers/{firstname}/{lastname}")
-    public List<ResponseEntity> getTeacherFirstnameOrLastname(@PathVariable("firstname") String firstname,
-                                               @PathVariable("lastname") String lastname){
+    public List<TeacherEntityResponse> getTeacherFirstnameOrLastname(@PathVariable("firstname") String firstname,
+                                                                     @PathVariable("lastname") String lastname){
         return   teacherService.findByFirstnameORLastname(firstname, lastname);
     }
 
     // querying with IN operator in JPA
     @GetMapping("teachers/{something}")
-    public List<ResponseEntity> getAllMatchingNames(@RequestBody QueryName queryNames){
+    public List<TeacherEntityResponse> getAllMatchingNames(@RequestBody QueryName queryNames){
         return teacherService.findByFirstnameIn(queryNames);
     }
 

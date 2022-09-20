@@ -3,16 +3,17 @@ package com.manuel.restfulapicourse.services.impl;
 import com.manuel.restfulapicourse.dto.QueryName;
 import com.manuel.restfulapicourse.dto.TeacherDTO;
 import com.manuel.restfulapicourse.dto.UpdateTeacherDTO;
+import com.manuel.restfulapicourse.entity.Address;
 import com.manuel.restfulapicourse.entity.Teacher;
+import com.manuel.restfulapicourse.repository.AddressDAO;
 import com.manuel.restfulapicourse.repository.TeacherDAO;
 import com.manuel.restfulapicourse.services.TeacherService;
-import com.manuel.restfulapicourse.dto.ResponseEntity;
+import com.manuel.restfulapicourse.dto.TeacherEntityResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,29 +23,34 @@ import java.util.Optional;
 public class TeacherServiceImpl implements TeacherService {
     @Autowired
     private  TeacherDAO teacherDAO;
+    @Autowired
+    private AddressDAO addressDAO;
 
-    private ResponseEntity responseEntity;
+    private TeacherEntityResponse teacherEntityResponse;
 
     @Override
-    public List <ResponseEntity> getAllTeacher() {
+    public List <TeacherEntityResponse> getAllTeacher() {
       List<Teacher> teachers = teacherDAO.findAll();
-      List<ResponseEntity> responseEntities = new ArrayList<>();
+      List<TeacherEntityResponse> responseEntities = new ArrayList<>();
       teachers.stream().forEach(teacher -> {
-          ResponseEntity response = new ResponseEntity(teacher);
+          TeacherEntityResponse response = new TeacherEntityResponse(teacher);
           responseEntities.add(response);
       });
       return responseEntities;
     }
 
     @Override
-    public Teacher insertTeacherToDb(TeacherDTO teacher) {
-        Teacher aTeacher = new Teacher(teacher);
-        return teacherDAO.save(aTeacher);
-
+    public Teacher insertTeacherToDb(TeacherDTO teacherDTO) {
+        Teacher aTeacher = new Teacher(teacherDTO);
+        Address address = new Address(teacherDTO);
+        addressDAO.save(address);
+        aTeacher.setAddress(address);
+        Teacher savedTeacher = teacherDAO.save(aTeacher);
+        return savedTeacher;
     }
 
     @Override
-    public ResponseEntity updateTeacher(UpdateTeacherDTO teacherDTO) {
+    public TeacherEntityResponse updateTeacher(UpdateTeacherDTO teacherDTO) {
         int id = teacherDTO.getId();
 
         Teacher teacher = new Teacher();
@@ -57,7 +63,7 @@ public class TeacherServiceImpl implements TeacherService {
             teacher.setFirstname(name);
          }}
          Teacher aTeacher = teacherDAO.save(teacher);
-        return new ResponseEntity(aTeacher);
+        return new TeacherEntityResponse(aTeacher);
 
     }
 
@@ -82,25 +88,25 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public List<ResponseEntity> findByFirstnameORLastname(String firstname, String lastname) {
+    public List<TeacherEntityResponse> findByFirstnameORLastname(String firstname, String lastname) {
         List<Teacher> teachers = teacherDAO.findByFirstnameOrLastname(firstname, lastname);
-        List<ResponseEntity> responseEntityList = new ArrayList<>();
+        List<TeacherEntityResponse> teacherEntityResponseList = new ArrayList<>();
 
         teachers.stream().forEach(teacher -> {
-            responseEntityList.add(new ResponseEntity(teacher));
+            teacherEntityResponseList.add(new TeacherEntityResponse(teacher));
         });
-        return responseEntityList;
+        return teacherEntityResponseList;
     }
 
     @Override
-    public List<ResponseEntity> findByFirstnameIn(QueryName queryNames) {
+    public List<TeacherEntityResponse> findByFirstnameIn(QueryName queryNames) {
         List<Teacher> teachers = teacherDAO.findByFirstnameIn(queryNames.getFirstnames());
-        List<ResponseEntity> responseEntityList = new ArrayList<>();
+        List<TeacherEntityResponse> teacherEntityResponseList = new ArrayList<>();
 
         teachers.stream().forEach(teacher -> {
-            responseEntityList.add(new ResponseEntity(teacher));
+            teacherEntityResponseList.add(new TeacherEntityResponse(teacher));
         });
-        return responseEntityList;
+        return teacherEntityResponseList;
     }
 
     @Override

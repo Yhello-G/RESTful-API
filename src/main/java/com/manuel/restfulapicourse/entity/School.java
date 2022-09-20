@@ -1,7 +1,6 @@
 package com.manuel.restfulapicourse.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +10,7 @@ import javax.persistence.Table;
 @Entity
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "schools")
 public class School {
     @Id
@@ -19,4 +19,5 @@ public class School {
     private String schoolName;
     @Column(name = "school_location")
     private String location;
+
 }
